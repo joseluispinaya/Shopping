@@ -20,27 +20,75 @@ namespace Shopping.Controllers
         {
             return View();
         }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(Category category)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Add(category);
+        //            await _context.SaveChangesAsync();
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //        //catch (DbUpdateException exception) when (exception?.InnerException?.Message.Contains("Cannot insert duplicate key row in object") ?? false)
+        //        //{
+        //        //}
+        //        catch (DbUpdateException dbUpdateException)
+        //        {
+        //            //if (dbUpdateException.InnerException.Message.Contains("duplicada"))
+        //            //{
+        //            //    ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+        //            //}
+        //            //else
+        //            var dv = dbUpdateException?.InnerException;
+        //            if (dv != null && dv.InnerException != null)
+        //            {
+        //                ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+        //            }
+        //            else
+        //            {
+        //                ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+        //            }
+        //        }
+        //        catch (Exception exception)
+        //        {
+        //            ModelState.AddModelError(string.Empty, exception.Message);
+        //        }
+        //    }
+        //    return View(category);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category category)
         {
             if (ModelState.IsValid)
             {
+                //var ret2 = dbUpdateException?.InnerException;
                 try
                 {
                     _context.Add(category);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
+                //catch (DbUpdateException exception) when (exception?.InnerException?.Message.Contains("duplicada") ?? false)
+                //{
+                //    ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+                //}
+
                 catch (DbUpdateException dbUpdateException)
                 {
-                    if (dbUpdateException.InnerException.Message.Contains("duplicada"))
+                    var ret = dbUpdateException?.InnerException;
+                    
+                    //if (dbUpdateException.InnerException != null && dbUpdateException.InnerException.Message.Contains("duplicada"))
+                    if (ret != null && ret.Message.Contains("duplicada"))
                     {
                         ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        ModelState.AddModelError(string.Empty, $"{ret?.InnerException?.Message}");
                     }
                 }
                 catch (Exception exception)
