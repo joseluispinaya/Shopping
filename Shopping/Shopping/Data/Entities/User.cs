@@ -32,10 +32,14 @@ namespace Shopping.Data.Entities
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
 
+        //[Display(Name = "Foto")]
+        //public string ImageFullPath => ImageId == Guid.Empty
+        //    ? $"https://localhost:7071/images/noimage.png"
+        //    : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:7071/images/noimage.png"
-            : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
+            : $"https://shoppingjo.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Tipo de usuario")]
         public UserType UserType { get; set; }
