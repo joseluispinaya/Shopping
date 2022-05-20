@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopping.Data;
 using Shopping.Data.Entities;
+using Vereyon.Web;
 
 namespace Shopping.Controllers
 {
@@ -10,9 +11,12 @@ namespace Shopping.Controllers
     public class CategoriesController : Controller
     {
         private readonly DataContext _context;
-        public CategoriesController(DataContext context)
+        private readonly IFlashMessage _flashMessage;
+
+        public CategoriesController(DataContext context, IFlashMessage flashMessage)
         {
             _context = context;
+            _flashMessage = flashMessage;
         }
         public async Task<IActionResult> Index()
         {
@@ -61,6 +65,48 @@ namespace Shopping.Controllers
         //    }
         //    return View(category);
         //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(Category category)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        //var ret2 = dbUpdateException?.InnerException;
+        //        try
+        //        {
+        //            _context.Add(category);
+        //            await _context.SaveChangesAsync();
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //        //catch (DbUpdateException exception) when (exception?.InnerException?.Message.Contains("duplicada") ?? false)
+        //        //{
+        //        //    ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+        //        //}
+
+        //        catch (DbUpdateException dbUpdateException)
+        //        {
+        //            var ret = dbUpdateException?.InnerException;
+
+        //            //if (dbUpdateException.InnerException != null && dbUpdateException.InnerException.Message.Contains("duplicada"))
+        //            if (ret != null && ret.Message.Contains("duplicada"))
+        //            {
+        //                ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+
+        //            }
+        //            else
+        //            {
+        //                ModelState.AddModelError(string.Empty, $"{ret?.InnerException?.Message}");
+        //            }
+        //        }
+        //        catch (Exception exception)
+        //        {
+        //            ModelState.AddModelError(string.Empty, exception.Message);
+        //        }
+        //    }
+        //    return View(category);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category category)
@@ -82,20 +128,23 @@ namespace Shopping.Controllers
                 catch (DbUpdateException dbUpdateException)
                 {
                     var ret = dbUpdateException?.InnerException;
-                    
-                    //if (dbUpdateException.InnerException != null && dbUpdateException.InnerException.Message.Contains("duplicada"))
-                    if (ret != null && ret.Message.Contains("duplicada"))
+
+                    if (dbUpdateException.InnerException.Message.Contains("duplicada"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+                        //ModelState.AddModelError(string.Empty, "Ya existe una Categoria con el mismo nombre.");
+                        _flashMessage.Danger("Ya existe una Categoria con el mismo nombre.");
+
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, $"{ret?.InnerException?.Message}");
+                        //ModelState.AddModelError(string.Empty, $"{ret?.InnerException?.Message}");
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    //ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message);
                 }
             }
             return View(category);
@@ -136,16 +185,16 @@ namespace Shopping.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicada"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una categoría con el mismo nombre.");
+                        _flashMessage.Danger("Ya existe una categoría con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message);
                 }
             }
 
@@ -189,6 +238,7 @@ namespace Shopping.Controllers
             Category category = await _context.Categories.FindAsync(id);
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+            _flashMessage.Info("Registro borrado.");
             return RedirectToAction(nameof(Index));
         }
     }
