@@ -16,10 +16,15 @@ namespace Shopping.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Description { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:C2}")]
         [Display(Name = "Precio")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public decimal Price { get; set; }
+        [RegularExpression(@"^\d+([\.\,]?\d+)?$", ErrorMessage = "Use only numbers and . or , to put decimals")]
+        [Required]
+        public string Price { get; set; }
+
+        //[DisplayFormat(DataFormatString = "{0:C2}")]
+        //[Display(Name = "Precio")]
+        //[Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        //public decimal Price { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Display(Name = "Inventario")]

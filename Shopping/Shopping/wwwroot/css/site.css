@@ -16,3 +16,33 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+@charset "utf-8";
+
+
+/*Zoom images*/
+.zoom {
+    padding: 5px;
+    background-color: transparent;
+    transition: transform .2s;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+}
+
+    .zoom:hover {
+        -ms-transform: scale(2); /* IE 9 */
+        -webkit-transform: scale(2); /* Safari 3-8 */
+        transform: scale(2);
+    }
+.carousel-inner {
+    width: auto;
+    height: 500px;
+    max-height: 500px !important;
+}
+
+.carousel-content {
+    color: black;
+    display: flex;
+    text-align: center;
+}

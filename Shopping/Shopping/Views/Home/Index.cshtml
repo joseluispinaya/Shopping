@@ -1,8 +1,55 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Shopping.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style type="text/css">
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid lightgray;
+        box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+        border-radius: 15px;
+        font-family: sans-serif;
+        margin: 5px;
+    }
+</style>
+
+@if(Model.Quantity > 0)
+{
+    <a asp-action="ShowCart" class="btn btn-outline-primary">Ver Carro de Compras (@Model.Quantity)</a>
+}
+
+<div class="row row-cols-1 row-cols-md-4 g-4 mt-1">
+    @if (Model.Products.Count() > 0)
+    {
+        @foreach (var item in Model.Products)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="text-center zoom">
+                        <img src="@item.ImageFullPath" style="height:150px; max-width:200px;" class="text-center" alt=@item.Name />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-navy"> @item.Name</h5>
+                        <p class="card-text smfnt">@item.Description</p>
+                        <h5 class="text-muted">@Html.DisplayFor(modelItem => item.Price)</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
+                        <a asp-action="Add" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h3>No hay productos con su criterio de búsqueda</h3>
+    }
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
