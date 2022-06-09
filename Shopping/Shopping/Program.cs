@@ -4,6 +4,7 @@ using Shopping.Data;
 using Shopping.Data.Entities;
 using Shopping.Helpers;
 using Vereyon.Web;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
